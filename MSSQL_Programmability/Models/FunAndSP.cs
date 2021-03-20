@@ -9,6 +9,9 @@ namespace MSSQL_Programmability.Models
     [Table("FunAndSP")]
     public partial class FunAndSP
     {
+        [Key]
+        public int Id { get; set; }
+
         [StringLength(200)]
         public string Name { get; set; }
 
@@ -24,11 +27,9 @@ namespace MSSQL_Programmability.Models
         [StringLength(100)]
         public string Tags { get; set; }
 
-        [Key]
         [Column(Order = 0, TypeName = "datetime2")]
         public DateTime CreatedTime { get; set; }
 
-        [Key]
         [Column(Order = 1, TypeName = "datetime2")]
         public DateTime UpdateTime { get; set; }
     }

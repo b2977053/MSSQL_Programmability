@@ -9,6 +9,7 @@ namespace MSSQL_Programmability.Models
     [Table("TableInfoViewTableInfo")]
     public partial class TableInfoViewTableInfo
     {
+        [Key]
         public int Id { get; set; }
 
         [StringLength(200)]
