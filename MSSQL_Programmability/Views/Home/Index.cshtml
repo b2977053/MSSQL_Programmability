@@ -1,24 +1,274 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+﻿<div class="row">
+    <div class="col-md-12">
+        Home > index
+    </div>
+    <div class="col-md-12 search-header">
+        @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formList", @Autocomplete= "off" }))
+        {
+            @Html.Hidden("testHidden", "testHiddentestHidden")
+            <div class="form-group">
+                Name: @Html.TextBox("Name", (string)ViewBag.Name)
+                EXECUTE: @Html.TextBox("EXECUTE", (string)ViewBag.EXECUTE)
+                content: @Html.TextBox("content", (string)ViewBag.content)
+                remark: @Html.TextBox("remark", (string)ViewBag.remark)
+                tags: @Html.TextBox("tags", (string)ViewBag.tags)
+				<br><button>查詢</button>
+            </div>
+        }
+        <button type="button" id="btnADD" class="btn btn-default btn-sm" data-toggle="modal" data-target="#ModalADD">
+            新增
+        </button>
+    </div>
+    <div class="col-md-12">
+        <table id="example" class="display" width="100%"></table>
+    </div>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalADD" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">新增</h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formAdd", @Autocomplete= "off" }))
+                {
+                    <div class="">
+                        Name: @Html.TextBox("Name", "", new { @class = "form-control" })
+                        EXECUTE: @Html.TextArea("EXECUTE", "", new { @class = "form-control", @rows = "3" })
+                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "9" })
+                        remark: @Html.TextArea("remark", "", new { @class = "form-control", @rows = "3" })
+                        <br>tags: @Html.TextBox("tags", "", new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="FormAdd('formAdd');" >Save changes</button>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    function SetModalAddDataClear() {
+        formAdd.Name.value = '';
+        formAdd.EXECUTE.value = '';
+        formAdd.content.value = '';
+        formAdd.remark.value = '';
+        formAdd.tags.value = '';
+    }
+    function FormAdd(formID) {
+        var formData = new FormData(document.getElementById(formID));
+        var data = {};
+        formData.forEach((value, key) => data[key] = value);
+        var settings = {
+            "url": "../api/SQLProCRUD",
+            "method": "POST",
+            "contentType": false,
+            "timeout": 3000,
+            "headers": {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "data": data
+        };
+        $.ajax(settings)
+            .done(function (e) {
+                var Old_innerText = document.getElementById('btnADD').innerText;
+                document.getElementById('btnADD').innerText = 'COMMIT...';
+                setTimeout(function () { document.getElementById('btnADD').innerText = Old_innerText; }, 2000);
+
+                $('#ModalADD').modal('hide');
+                SetModalAddDataClear();
+
+                table_example.ajax.reload();
+            })
+            .fail(function (e) {
+                console.log(e);
+                alert("error");
+            })
+            .always(function () {
+                
+            });
+    }
+</script>
+<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEditTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <button type="button" class="btn btn-default btn-xs" onclick="FormDelete('formEdit');">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    修改
+                </h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formEdit", @Autocomplete = "off" }))
+                {
+                    @Html.Hidden("Id", "")
+                    <div class="">
+                        Name: @Html.TextBox("Name", "", new { @class = "form-control" })
+                        EXECUTE: @Html.TextArea("EXECUTE", "", new { @class = "form-control", @rows = "3" })
+                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "9" })
+                        remark: @Html.TextArea("remark", "", new { @class = "form-control", @rows = "3" })
+                        <br>tags: @Html.TextBox("tags", "", new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="FormEdit('formEdit');">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function SetModalEditData(id) {
+        var data = Array.prototype.filter.call(table_example.ajax.json(), (data) => data.Id === id);
+        if (data && data[0]) {
+            formEdit.Id.value = data[0].Id;
+            formEdit.Name.value = data[0].Name;
+            formEdit.EXECUTE.value = data[0].Execute;
+            formEdit.content.value = data[0].Content;
+            formEdit.remark.value = data[0].Remark;
+            formEdit.tags.value = data[0].Tags;
+
+            $('#ModalEdit').modal('show');
+        }
+    }
+    function FormEdit(formID) {
+        var formData = new FormData(document.getElementById(formID));
+        var data = {};
+        formData.forEach((value, key) => data[key] = value);
+        var settings = {
+            "url": "../api/SQLProCRUD",
+            "method": "PUT",
+            "contentType": false,
+            "timeout": 3000,
+            "headers": {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "data": data
+        };
+        $.ajax(settings)
+            .done(function (e) {
+                $('#ModalEdit').modal('hide');
+                table_example.ajax.reload();
+            })
+            .fail(function (e) {
+                console.log(e);
+                alert("error");
+            })
+            .always(function () {
+
+            });
+    }
+	function FormDelete(formID) {
+		if (confirm('是否確定要刪除檔案?')) {
+			SQLProCRUD_DELETE(document.getElementById(formID).Id.value);
+		}
+	}
+	function SQLProCRUD_DELETE(Id)
+	{
+		var data = [];
+		data.push(Id);
+		var settings = {
+			"url": "../api/SQLProCRUD",
+			"method": "DELETE",
+			"contentType": false,
+			"timeout": 3000,
+			"headers": {
+				"Content-Type": "application/json"
+			},
+			"data": JSON.stringify(data)
+		};
+		$.ajax(settings)
+			.done(function (e) {
+                $('#ModalEdit').modal('hide');
+				table_example.ajax.reload();
+			})
+			.fail(function (e) {
+				console.log(e);
+				alert("error");
+			})
+			.always(function () {
+
+			});
+	}
+</script>
+
+<script>
+
+    var table_example = {};
+    function SetDataTable_ajax(JQElement, url) {
+        var Ajax = { type: 'GET', dataSrc: '' };
+        Ajax.url = url;
+        var dataTable = JQElement.DataTable({
+            paging: false, scrollY: '350px',
+            dom: '<t>', // 查詢隱藏
+            scroller: {
+                loadingIndicator: true // 是否顯示"檔案加載中"文字。
+            },
+            language: {
+                loadingRecords: '請稍等...',
+                emptyTable: '無資料'
+            },
+            footerCallback: function FooterCallback() {
+                var api = this.api();
+                total = api.column('col_tag:name').data()
+                    .reduce(function (a, b) {
+                        if (b != null) {
+                            return a + '|' + b;
+                        } else {
+                            return a;
+                        }
+
+                    }, '--');
+                //console.log(total);
+
+                var el_col_ids = Array.prototype.map.call(api.column('col_view:name').nodes(), td => td);
+
+                api.column('col_id:name').data().each((id, index, ColInstance) => {
+                    el_col_ids[index].addEventListener("click", () => {
+                        SetModalEditData(id);
+                    }, false);
+                });
+            },
+            drawCallback: function DrawCallback() { },
+            ajax: Ajax,
+            columnDefs: [
+                { targets: '_all', width: "", className: ''}
+            ],
+            columns: [
+                {
+                    data: null, title: '', name: 'col_view'
+                    , defaultContent: '<button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button>'
+                },
+                { data: 'Id', title: 'Id', visible: false, name: 'col_id' },
+                { data: 'Name', title: 'Name' },
+                { data: 'Execute', title: 'Execute' },
+                { data: 'Remark', title: 'Remark' },
+                { data: 'Tags', title: 'Tags', name: 'col_tag' }
+            ]
+
+        });
+        return dataTable;
+	}
+    $(document).ready(function () {
+		table_example = SetDataTable_ajax($('#example'), '../api/SQLProCRUD' + '@Html.Raw(ViewBag.AJAXparams)');
+    });
+
+    /*
+        table_example.ajax.json: ƒ ()  // 取得 Response 的 JSON 資料
+        table_example.ajax.params: ƒ ()  // 取得 params
+        table_example.ajax.reload: ƒ ()  // 重新載入資料，並回傳自己(table_example)
+        table_example.ajax.url: ƒ ()  // 取得 url
+    */
+</script>
