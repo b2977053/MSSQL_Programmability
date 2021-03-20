@@ -3,7 +3,7 @@
         Home > index
     </div>
     <div class="col-md-12 search-header">
-        @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formList", @Autocomplete= "off" }))
+        @using (Html.BeginForm("TableInfo", "Home", FormMethod.Post, new { @Id = "formList", @Autocomplete = "off" }))
         {
             @Html.Hidden("testHidden", "testHiddentestHidden")
             <div class="form-group">
@@ -12,7 +12,7 @@
                 content: @Html.TextBox("content", (string)ViewBag.content)
                 remark: @Html.TextBox("remark", (string)ViewBag.remark)
                 tags: @Html.TextBox("tags", (string)ViewBag.tags)
-				<br><button>查詢</button>
+                <br><button>查詢</button>
             </div>
         }
         <button type="button" id="btnADD" class="btn btn-default btn-sm" data-toggle="modal" data-target="#ModalADD">
@@ -35,7 +35,7 @@
                 <h4 class="modal-title">新增</h4>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formAdd", @Autocomplete= "off" }))
+                @using (Html.BeginForm("TableInfo", "Home", FormMethod.Post, new { @Id = "formAdd", @Autocomplete = "off" }))
                 {
                     <div class="">
                         Name: @Html.TextBox("Name", "", new { @class = "form-control" })
@@ -48,7 +48,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="FormAdd('formAdd');" >Save changes</button>
+                <button type="button" class="btn btn-success" onclick="FormAdd('formAdd');">Save changes</button>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
         var data = {};
         formData.forEach((value, key) => data[key] = value);
         var settings = {
-            "url": "../api/SQLProCRUD",
+            "url": "../api/TableInfoCRUD",
             "method": "POST",
             "contentType": false,
             "timeout": 3000,
@@ -91,7 +91,7 @@
                 alert("error");
             })
             .always(function () {
-                
+
             });
     }
 </script>
@@ -110,7 +110,7 @@
                 </h4>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @Id = "formEdit", @Autocomplete = "off" }))
+                @using (Html.BeginForm("TableInfo", "Home", FormMethod.Post, new { @Id = "formEdit", @Autocomplete = "off" }))
                 {
                     @Html.Hidden("Id", "")
                     <div class="">
@@ -148,7 +148,7 @@
         var data = {};
         formData.forEach((value, key) => data[key] = value);
         var settings = {
-            "url": "../api/SQLProCRUD",
+            "url": "../api/TableInfoCRUD",
             "method": "PUT",
             "contentType": false,
             "timeout": 3000,
@@ -175,12 +175,12 @@
             ajax_DELETE(document.getElementById(formID).Id.value);
 		}
 	}
-    function ajax_DELETE(Id)
+	function ajax_DELETE(Id)
 	{
 		var data = [];
 		data.push(Id);
 		var settings = {
-			"url": "../api/SQLProCRUD",
+            "url": "../api/TableInfoCRUD",
 			"method": "DELETE",
 			"contentType": false,
 			"timeout": 3000,
@@ -262,7 +262,7 @@
         return dataTable;
 	}
     $(document).ready(function () {
-		table_example = SetDataTable_ajax($('#example'), '../api/SQLProCRUD' + '@Html.Raw(ViewBag.AJAXparams)');
+        table_example = SetDataTable_ajax($('#example'), '../api/TableInfoCRUD' + '@Html.Raw(ViewBag.AJAXparams)');
     });
 
     /*
