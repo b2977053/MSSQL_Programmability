@@ -39,8 +39,8 @@
                 {
                     <div class="">
                         Name: @Html.TextBox("Name", "", new { @class = "form-control" })
-                        EXECUTE: @Html.TextArea("EXECUTE", "", new { @class = "form-control", @rows = "3" })
-                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "9" })
+                        EXECUTE: @Html.TextArea("EXECUTE", "Table|ViewTable", new { @class = "form-control", @rows = "1" })
+                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "10" })
                         remark: @Html.TextArea("remark", "", new { @class = "form-control", @rows = "3" })
                         <br>tags: @Html.TextBox("tags", "", new { @class = "form-control" })
                     </div>
@@ -115,8 +115,8 @@
                     @Html.Hidden("Id", "")
                     <div class="">
                         Name: @Html.TextBox("Name", "", new { @class = "form-control" })
-                        EXECUTE: @Html.TextArea("EXECUTE", "", new { @class = "form-control", @rows = "3" })
-                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "9" })
+                        EXECUTE: @Html.TextArea("EXECUTE", "", new { @class = "form-control", @rows = "1" })
+                        <br>content: @Html.TextArea("content", "", new { @class = "form-control", @rows = "10" })
                         remark: @Html.TextArea("remark", "", new { @class = "form-control", @rows = "3" })
                         <br>tags: @Html.TextBox("tags", "", new { @class = "form-control" })
                     </div>
@@ -252,10 +252,10 @@
                     , defaultContent: '<button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button>'
                 },
                 { data: 'Id', title: 'Id', visible: false, name: 'col_id' },
-                { data: 'Name', title: 'Name' },
-                { data: 'Execute', title: 'Execute' },
-                { data: 'Remark', title: 'Remark' },
-                { data: 'Tags', title: 'Tags', name: 'col_tag' }
+                { data: 'Name', title: 'Name', width: '220px' },
+				{ data: 'Remark', title: 'Remark' },
+				{ data: 'Tags', title: 'Tags', name: 'col_tag' },
+				{ data: 'Execute', title: 'Execute', width: '80px' }
             ]
 
         });
